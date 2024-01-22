@@ -1,9 +1,34 @@
+import groovy.lang.Closure
+import io.github.pacifistmc.forgix.plugin.ForgixMergeExtension.FabricContainer
+import io.github.pacifistmc.forgix.plugin.ForgixMergeExtension.ForgeContainer
 import java.text.SimpleDateFormat
 import java.util.*
 
 plugins {
     // Required for NeoGradle
     id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.7"
+    id("io.github.pacifistmc.forgix") version "1.2.6"
+}
+
+forgix {
+    group = "com.example.examplemod"
+    mergedJarName = "${project.property("mod_name")}-merged-${project.property("minecraft_version")}-${project.version}.jar"
+    outputDir = "artifacts"
+
+    forge(closureOf<ForgeContainer> {
+        projectName = "neoforge"
+        jarLocation = "build/libs/${project.property("mod_name")}-neoforge-${project.property("minecraft_version")}-${project.version}.jar"
+
+        mixin("examplemod.mixins.json")
+        mixin("examplemod.neoforge.mixins.json")
+    } as Closure<ForgeContainer>) // this is a workaround
+
+    fabric(closureOf<FabricContainer> {
+        projectName = "fabric"
+        jarLocation = "build/libs/${project.property("mod_name")}-fabric-${project.property("minecraft_version")}-${project.version}.jar"
+    } as Closure<FabricContainer>) // this is a workaround
+
+
 }
 
 subprojects {
@@ -15,7 +40,27 @@ subprojects {
         withJavadocJar()
     }
 
+    val copyJars by tasks.registering {
+
+        dependsOn("build")
+        doLast {
+            copy {
+                from("build/libs/${project.property("mod_name")}-neoforge-${project.property("minecraft_version")}-${project.version}.jar")
+                into(rootProject.file("artifacts"))
+            }
+            copy {
+                from("build/libs/${project.property("mod_name")}-fabric-${project.property("minecraft_version")}-${project.version}.jar")
+                into(rootProject.file("artifacts"))
+            }
+        }
+        finalizedBy(":mergeJars")
+    }
+
     tasks {
+        "build"(DefaultTask::class) {
+            // run the copyJars task after the build task
+            finalizedBy(copyJars)
+        }
         "jar"(Jar::class) {
             val jar = this
 
@@ -46,6 +91,7 @@ subprojects {
                 rename { "${it}_${project.property("mod_name")}" }
             }
         }
+
 
         "processResources"(ProcessResources::class) {
             val properties = mapOf(

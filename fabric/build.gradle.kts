@@ -1,3 +1,7 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+
+
 plugins {
     id("java")
     id("idea")
@@ -21,6 +25,8 @@ dependencies {
     implementation(group = "com.google.code.findbugs", name = "jsr305", version = "3.0.1")
     implementation(project(":common"))
 }
+
+
 
 loom {
     if (project(":common").file("src/main/resources/${project.property("mod_id")}.accesswidener").exists()) {
@@ -50,6 +56,10 @@ loom {
 
 
 tasks {
+    withType<KotlinCompile> {
+        source(project(":common").sourceSets.main.get().allSource)
+    }
+
     withType<JavaCompile> {
         source(project(":common").sourceSets.main.get().allSource)
     }
