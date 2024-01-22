@@ -1,11 +1,16 @@
 package com.example.examplemod;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 public class Constants {
 
-	public static final String MOD_ID = "examplemod";
-	public static final String MOD_NAME = "ExampleMod";
-	public static final Logger LOG = LoggerFactory.getLogger(MOD_NAME);
+    // This is the mod ID.
+    public static final String MOD_ID = "examplemod";
+
+    // This is the name of the mod.
+    public static final String MOD_NAME = "ExampleMod";
+
+    // This is the logger for the mod. It will automatically have the mod name and show up properly in the log.
+    public static final Logger LOG = LoggerFactory.getLogger(MOD_NAME);
 }
