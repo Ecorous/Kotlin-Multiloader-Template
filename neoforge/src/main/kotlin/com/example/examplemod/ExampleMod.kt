@@ -2,6 +2,7 @@ package com.example.examplemod
 
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.common.Mod
+import com.example.examplemod.platform.CommonClass
 
 @Mod(Constants.MOD_ID)
 class ExampleMod(eventBus: IEventBus?) {

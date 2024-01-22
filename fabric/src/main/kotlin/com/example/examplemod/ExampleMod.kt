@@ -1,5 +1,6 @@
 package com.example.examplemod
 
+import com.example.examplemod.platform.CommonClass
 import net.fabricmc.api.ModInitializer
 
 object ExampleMod : ModInitializer {

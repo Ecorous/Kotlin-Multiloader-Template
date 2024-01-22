@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("idea")
@@ -6,6 +7,8 @@ plugins {
     id("java-library")
     kotlin("jvm") version "1.9.22"
 }
+
+jarJar.enable()
 
 base {
     archivesName = "${project.property("mod_name")}-neoforge-${project.property("minecraft_version")}"
@@ -56,13 +59,17 @@ sourceSets.main.configure {
 
 dependencies {
     implementation("net.neoforged:neoforge:${project.property("neoforge_version")}")
-    implementation("thedarkcolour:kotlinforforge-neoforge:4.7.0")
+    implementation("thedarkcolour:kotlinforforge-neoforge:4.10.0")
     compileOnly(project(":common"))
+    jarJar(project(":common"))
 }
 
 val notNeoGradleTask = Spec<Task> { !it.name.startsWith("neo") }
 
 tasks {
+    withType<KotlinCompile>().matching(notNeoGradleTask).configureEach {
+        source(project(":common").sourceSets.main.get().allSource)
+    }
     withType<JavaCompile>().matching(notNeoGradleTask).configureEach {
         source(project(":common").sourceSets.main.get().allSource)
     }

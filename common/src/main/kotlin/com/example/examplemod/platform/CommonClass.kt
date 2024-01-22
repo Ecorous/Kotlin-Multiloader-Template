@@ -1,3 +1,5 @@
+package com.example.examplemod.platform
+
 
 import com.example.examplemod.Constants
 import com.example.examplemod.platform.Services
